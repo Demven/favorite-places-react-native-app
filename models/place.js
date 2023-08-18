@@ -1,9 +1,10 @@
 export default class Place {
-  constructor (title, imageUri, address, location) {
-    this.id = new Date().toString() + Math.random().toString();
+  constructor (id, title, imageUri, address, latitude, longitude) {
+    this.id = id || new Date().toString() + Math.random().toString();
     this.title = title;
     this.imageUri = imageUri;
     this.address = address;
-    this.location = location; // { lat: 0.23412, lng: 127.89212 }
+    this.latitude = latitude; // e.g. 0.23412
+    this.longitude = longitude; // e.g. 127.89212
   }
 }
