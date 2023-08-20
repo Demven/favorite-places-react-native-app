@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { savePlace } from '../../services/database';
+import { sendNotification } from '../../services/notifications';
 import PlacesForm from './PlaceForm';
 
 export default function AddPlaceScreen () {
@@ -7,9 +8,8 @@ export default function AddPlaceScreen () {
 
   function onCreatePlace (place) {
     savePlace(place)
-      .then(() => {
-        navigation.navigate('AllPlacesScreen');
-      })
+      .then(place => sendNotification(place))
+      .then(() => navigation.navigate('AllPlacesScreen'));
   }
 
   return (

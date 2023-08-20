@@ -1,7 +1,7 @@
 import { openDatabase } from 'expo-sqlite';
 import Place from '../models/place';
 
-const database = openDatabase('places.db')
+const database = openDatabase('places.db');
 
 export function initDatabase () {
   return new Promise((resolve, reject) => {

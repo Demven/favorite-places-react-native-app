@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { NavigationContainer  } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import {
+  addNotificationReceivedListener,
+  addNotificationResponseReceivedListener,
+} from 'expo-notifications';
 import AppLoading from 'expo-app-loading';
 import AllPlacesScreen from './screens/AllPlacesScreen';
 import AddPlaceScreen from './screens/AddPlaceScreen';
@@ -10,6 +14,7 @@ import MapScreen from './screens/MapScreen';
 import PlaceDetailsScreen from './screens/PlaceDetailsScreen';
 import IconButton from './components/IconButton';
 import { initDatabase } from './services/database';
+import { configurePushNotifications } from './services/notifications';
 import { Color } from './constants/colors';
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +25,29 @@ export default function App() {
   useEffect(() => {
     initDatabase()
       .then(() => { setDatabaseInitialized(true) });
+  }, []);
+
+  useEffect(() => {
+    configurePushNotifications();
+  }, []);
+
+  useEffect(() => {
+    const notificationReceivedSubscription = addNotificationReceivedListener((notification) => {
+      console.info('notification', notification);
+      console.info('data', notification.request.content.data);
+    });
+
+    const notificationResponseSubscription = addNotificationResponseReceivedListener((response) => {
+      console.info('response', response);
+      console.info('data', response.notification.request.content.data);
+
+      Alert.alert('Opened notification', response.notification.request.content.data.title);
+    });
+
+    return () => {
+      notificationReceivedSubscription.remove();
+      notificationResponseSubscription.remove();
+    };
   }, []);
 
   if (!databaseInitialized) {
